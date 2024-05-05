@@ -1,0 +1,19 @@
+---
+- hosts: localhost
+  connection: local
+  become: true
+
+  tasks:
+    - name: install packages
+      package:
+        name:
+          - hello
+          - neovim
+          - tmux
+          - vim
+          - lua5.3
+          - luarocks
+          - wget
+          - git
+          - htop
+          - ranger
