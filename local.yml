@@ -1,6 +1,5 @@
 ---
-- hosts: localhost
-  connection: local
+- hosts: all
   become: true
 
   tasks:
@@ -10,6 +9,7 @@
           - hello
           - neovim
           - tmux
+          - tmux-plugin-manager
           - vim
           - lua5.3
           - luarocks
@@ -17,3 +17,25 @@
           - git
           - htop
           - ranger
+
+    - name: Install Nix
+      ansible.builtin.shell: "curl -L https://nixos.org/nix/install | sh"
+      args:
+        creates: /nix
+      register: nix_install_result
+      changed_when: "'install' in nix_install_result.stdout"
+
+    - name: Install nixpkgs
+      ansible.builtin.shell: "nix-env -iA nixpkgs.nix"
+      args:
+        creates: /nix/store
+      register: nixpkgs_install_result
+      changed_when: "'install' in nixpkgs_install_result.stdout"
+
+    - name: Install nixpkgs-fmt
+      ansible.builtin.shell: nix-env -iA nixpkgs.nixpkgs-fmt
+      args:
+        creates: /nix/store/*/bin/nixpkgs-fmt
+      register: nixpkgs_fmt_install_result
+      changed_when: "'install' in nixpkgs_fmt_install_result.stdout"
+      become: false
