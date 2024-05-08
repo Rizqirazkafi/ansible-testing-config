@@ -1,6 +1,7 @@
 ---
 - hosts: all
   become: true
+  become_user: rizqirazkafi
 
   tasks:
     - name: install packages
@@ -28,7 +29,8 @@
         group: rizqirazkafi
         mode: '0775'
     - name: Copy neovim config 
-      ansible.builtin.copy:
+      ansible.posix.synchronize:
+        private_key: ~/.ssh/id_ed25519
         src: nvim
         dest: /home/rizqirazkafi/.config
     - name: change ownership recursively
@@ -40,11 +42,13 @@
         group: rizqirazkafi
         mode: '0775'
     - name: copy tpm
-      ansible.builtin.copy:
+      ansible.posix.synchronize:
+        private_key: ~/.ssh/id_ed25519
         src: .tmux
-        dest: /home/rizqirazkafi/
+        dest: /home/rizqirazkafi/.tmux
     - name: copy .tmux.conf
-      ansible.builtin.copy:
+      ansible.posix.synchronize:
+        private_key: ~/.ssh/id_ed25519
         src: .tmux.conf
         dest: /home/rizqirazkafi/.tmux.conf
     - name: change owner of .tmux.conf
