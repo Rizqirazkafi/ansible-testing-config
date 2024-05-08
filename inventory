@@ -1,0 +1,5 @@
+[localhost]
+localhost ansible_connection=local
+
+[remote]
+192.168.30.62
