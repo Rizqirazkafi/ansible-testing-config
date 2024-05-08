@@ -9,33 +9,57 @@
           - hello
           - neovim
           - tmux
-          - tmux-plugin-manager
           - vim
-          - lua5.3
-          - luarocks
           - wget
           - git
           - htop
           - ranger
+          - xclip
+          - ripgrep
+          - cargo
+          - python3-pip
+          - python3-venv
+          - npm
+    - name: create directory for config 
+      ansible.builtin.file:
+        path: /home/rizqirazkafi/.config
+        state: directory
+        owner: rizqirazkafi
+        group: rizqirazkafi
+        mode: '0775'
+    - name: Copy neovim config 
+      ansible.builtin.copy:
+        src: nvim
+        dest: /home/rizqirazkafi/.config
+    - name: change ownership recursively
+      ansible.builtin.file:
+        path: /home/rizqirazkafi/.config
+        state: directory
+        recurse: yes
+        owner: rizqirazkafi
+        group: rizqirazkafi
+        mode: '0775'
+    - name: copy tpm
+      ansible.builtin.copy:
+        src: .tmux
+        dest: /home/rizqirazkafi/
+    - name: copy .tmux.conf
+      ansible.builtin.copy:
+        src: .tmux.conf
+        dest: /home/rizqirazkafi/.tmux.conf
+    - name: change owner of .tmux.conf
+      ansible.builtin.file:
+        path: /home/rizqirazkafi/.tmux.conf
+        owner: rizqirazkafi
+        group: rizqirazkafi
+        mode: '0775'
+    - name: change owner of .tmux
+      ansible.builtin.file:
+        path: /home/rizqirazkafi/.tmux
+        recurse: yes
+        owner: rizqirazkafi
+        group: rizqirazkafi
+        mode: '0775'
 
-    - name: Install Nix
-      ansible.builtin.shell: "curl -L https://nixos.org/nix/install | sh"
-      args:
-        creates: /nix
-      register: nix_install_result
-      changed_when: "'install' in nix_install_result.stdout"
 
-    - name: Install nixpkgs
-      ansible.builtin.shell: "nix-env -iA nixpkgs.nix"
-      args:
-        creates: /nix/store
-      register: nixpkgs_install_result
-      changed_when: "'install' in nixpkgs_install_result.stdout"
 
-    - name: Install nixpkgs-fmt
-      ansible.builtin.shell: nix-env -iA nixpkgs.nixpkgs-fmt
-      args:
-        creates: /nix/store/*/bin/nixpkgs-fmt
-      register: nixpkgs_fmt_install_result
-      changed_when: "'install' in nixpkgs_fmt_install_result.stdout"
-      become: false
