@@ -2,4 +2,4 @@
 localhost ansible_connection=local
 
 [remote]
-192.168.30.62
+192.168.30.62 ansible_port=9005
