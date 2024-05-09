@@ -30,6 +30,14 @@
       ansible.builtin.copy:
         src: sshd_config
         dest: /etc/ssh/sshd_config
+    - name: enable nginx
+      ansible.builtin.service:
+        name: nginx
+        state: started
+    - name: enable php-fpm
+      ansible.builtin.service:
+        name: php8.3-fpm
+        state: started
 
 - hosts: all
   become: true
