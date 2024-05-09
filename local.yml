@@ -1,8 +1,7 @@
 ---
 - hosts: all
-  become: true
-  become_user: rizqirazkafi
-
+  become: yes
+  become_user: root
   tasks:
     - name: install packages
       package:
@@ -21,26 +20,27 @@
           - python3-pip
           - python3-venv
           - npm
-    - name: create directory for config 
-      ansible.builtin.file:
-        path: /home/rizqirazkafi/.config
-        state: directory
-        owner: rizqirazkafi
-        group: rizqirazkafi
-        mode: '0775'
+          - nginx
+          - php-fpm
+    - name: copy motd
+      ansible.builtin.copy:
+        src: motd
+        dest: /etc/motd
+    - name: copy sshd_config
+      ansible.builtin.copy:
+        src: sshd_config
+        dest: /etc/ssh/sshd_config
+
+- hosts: all
+  become: true
+  become_user: rizqirazkafi
+
+  tasks:
     - name: Copy neovim config 
       ansible.posix.synchronize:
         private_key: ~/.ssh/id_ed25519
         src: nvim
         dest: /home/rizqirazkafi/.config
-    - name: change ownership recursively
-      ansible.builtin.file:
-        path: /home/rizqirazkafi/.config
-        state: directory
-        recurse: yes
-        owner: rizqirazkafi
-        group: rizqirazkafi
-        mode: '0775'
     - name: copy tpm
       ansible.posix.synchronize:
         private_key: ~/.ssh/id_ed25519
@@ -51,19 +51,12 @@
         private_key: ~/.ssh/id_ed25519
         src: .tmux.conf
         dest: /home/rizqirazkafi/.tmux.conf
-    - name: change owner of .tmux.conf
-      ansible.builtin.file:
-        path: /home/rizqirazkafi/.tmux.conf
-        owner: rizqirazkafi
-        group: rizqirazkafi
-        mode: '0775'
-    - name: change owner of .tmux
-      ansible.builtin.file:
-        path: /home/rizqirazkafi/.tmux
-        recurse: yes
-        owner: rizqirazkafi
-        group: rizqirazkafi
-        mode: '0775'
-
-
+    - name: copy .bashrc
+      ansible.posix.synchronize:
+        src: .bashrc
+        dest: /home/rizqirazkafi/.bashrc
+    - name: copy ssh authorized_keys
+      ansible.posix.synchronize:
+        src: authorized_keys
+        dest: /home/rizqirazkafi/.ssh/authorized_keys
 
