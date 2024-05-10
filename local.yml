@@ -30,14 +30,27 @@
       ansible.builtin.copy:
         src: sshd_config
         dest: /etc/ssh/sshd_config
+    - name: copy nginx default config
+      ansible.builtin.copy:
+        src: default
+        dest: /etc/nginx/sites-enabled/default
+    - name: copy php8.3-fpm config
+      ansible.builtin.copy:
+        src: php-demo.conf
+        dest: /etc/php/8.3/fpm/pool.d
+    - name: clone website git repo
+      ansible.builtin.git:
+        repo: https://github.com/Rizqirazkafi/testing-website
+        dest: /var/www/html/testing-website
     - name: enable nginx
       ansible.builtin.service:
         name: nginx
-        state: started
+        state: restarted
     - name: enable php-fpm
       ansible.builtin.service:
         name: php8.3-fpm
-        state: started
+        state: restarted
+
 
 - hosts: all
   become: true
