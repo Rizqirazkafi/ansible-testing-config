@@ -1,0 +1,19 @@
+# Nginx configuration
+
+server {
+  listen 80 default_server;
+  root /var/www/html;
+  index index.php;
+  server_name _;
+  location / {
+    try_files $uri $uri/ =404;
+    autoindex on;
+  }
+
+  location ~ \.php$ {
+    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+    fastcgi_pass unix:/var/run/php8.3-fpm-php-demo.sock;
+    fastcgi_index index.php;
+    include fastcgi.conf;
+  }
+}
