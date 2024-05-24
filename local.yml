@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: 192.168.100.21
   become: yes
   become_user: root
   tasks:
@@ -22,6 +22,11 @@
           - npm
           - nginx
           - php-fpm
+    - name: install go
+      package:
+        name:
+          - golang
+        state: absent
     - name: copy motd
       ansible.builtin.copy:
         src: motd
@@ -52,7 +57,7 @@
         state: restarted
 
 
-- hosts: all
+- hosts: 192.168.100.21
   become: true
   become_user: rizqirazkafi
 
@@ -80,4 +85,8 @@
       ansible.posix.synchronize:
         src: authorized_keys
         dest: /home/rizqirazkafi/.ssh/authorized_keys
+    - name: copy vim configuration
+      ansible.posix.synchronize:
+        src: .vimrc
+        dest: /home/rizqirazkafi/.vimrc
 
