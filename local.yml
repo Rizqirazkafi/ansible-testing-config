@@ -1,13 +1,14 @@
 ---
-- hosts: 192.168.100.21
+- hosts: test
   become: yes
   become_user: root
   tasks:
     - name: install packages
-      package:
-        name:
+      ansible.builtin.apt:
+        pkg:
           - hello
           - neovim
+          - unzip
           - tmux
           - vim
           - wget
@@ -23,9 +24,9 @@
           - nginx
           - php-fpm
     - name: install go
-      package:
-        name:
-          - golang
+      ansible.builtin.apt:
+        pkg:
+          - golang-go
         state: absent
     - name: copy motd
       ansible.builtin.copy:
@@ -57,7 +58,7 @@
         state: restarted
 
 
-- hosts: 192.168.100.21
+- hosts: test
   become: true
   become_user: rizqirazkafi
 
